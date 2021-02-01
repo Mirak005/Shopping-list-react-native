@@ -1,40 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import AddItem from './components/AddItem';
 import Header from './components/Header';
 import ListItem from './components/ListItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const storeData = async (value) => {
-  try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem('items', jsonValue);
-  } catch (e) {
-    // saving error
-  }
-};
-
-const getData = async (key, setter) => {
-  try {
-    const v = await AsyncStorage.getItem(key);
-    setter(JSON.parse(v) || []);
-  } catch (e) {
-    // error reading value
-  }
-};
+import useAsyncStorage from './components/useAsyncStorage/useAsyncStorage';
 
 const App = () => {
-  const [items, setItems] = useState([
-    // {id: uuidv4(), text: 'Milk'},
-    // {id: uuidv4(), text: 'Water'},
-    // {id: uuidv4(), text: 'Bread'},
-    // {id: uuidv4(), text: 'Candys'},
-  ]);
+  const [items, setItems, getData, storeData] = useAsyncStorage([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getData('items', setItems);
+    getData('items', setItems, () => setLoading(false));
   }, []);
 
   const handleRemove = (id) =>
@@ -45,23 +30,43 @@ const App = () => {
     });
   const addItem = (text) => {
     if (!text.trim()) {
-      return Alert.alert('Error', 'Please enter an Item', [{text: 'Ok'}]);
+      return Alert.alert('Error', 'Please enter an Item', [{ text: 'Ok' }]);
     }
     setItems((prevItem) => {
-      const newState = [...prevItem, {text, id: uuidv4()}];
+      const newState = [...prevItem, { text, id: uuidv4() }];
       storeData(newState);
       return newState;
     });
   };
+
+  const editItem = (text, id) => {
+    if (!text.trim()) {
+      return Alert.alert('Error', 'Please enter an Item', [{ text: 'Ok' }]);
+    }
+    setItems((prevState) => {
+      const newState = prevState.map((item) =>
+        item.id === id ? { ...item, text } : item,
+      );
+      storeData(newState);
+      return newState;
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Header title="Shopping List" />
       <AddItem addItem={addItem} />
-      {Array.isArray(items) && items.length !== 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="darkslateblue" />
+      ) : Array.isArray(items) && items.length !== 0 ? (
         <FlatList
           data={items}
-          renderItem={({item}) => (
-            <ListItem handleRemove={handleRemove} item={item} />
+          renderItem={({ item }) => (
+            <ListItem
+              handleRemove={handleRemove}
+              editItem={editItem}
+              item={item}
+            />
           )}
           keyExtractor={(item) => item.id.toString()}
         />
