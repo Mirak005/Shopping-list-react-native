@@ -13,6 +13,7 @@ import AddItem from './components/AddItem';
 import Header from './components/Header';
 import ListItem from './components/ListItem';
 import useAsyncStorage from './components/useAsyncStorage/useAsyncStorage';
+import CodePush from 'react-native-code-push';
 
 const App = () => {
   const [items, setItems, getData, storeData] = useAsyncStorage([]);
@@ -54,7 +55,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="Shopping List" />
+      <Header title="Shopping" />
       <AddItem addItem={addItem} />
       {loading ? (
         <ActivityIndicator size="large" color="darkslateblue" />
@@ -101,4 +102,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+let codePushOptions = { checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME };
+
+export default CodePush(codePushOptions)(App);
