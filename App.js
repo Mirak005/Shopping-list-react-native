@@ -55,7 +55,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="Shopping" />
+      <Header title="Shopping List v2" />
       <AddItem addItem={addItem} />
       {loading ? (
         <ActivityIndicator size="large" color="darkslateblue" />

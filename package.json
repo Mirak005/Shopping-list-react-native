@@ -1,5 +1,5 @@
 {
-  "name": "ShoppingList",
+  "name": "shopping-list",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint ." ,
+    "relase:android" : "appcenter codepush release-react -a karimgharbbi-gmail.com/Shopping-List-Android -d Production"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.2",
