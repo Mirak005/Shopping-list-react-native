@@ -8,7 +8,9 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ." ,
-    "relase:android" : "appcenter codepush release-react -a karimgharbbi-gmail.com/Shopping-List-Android -d Production"
+    "apk": "cd android && ./gradlew app:assembleRelease",
+    "ok" :"appcenter code-push release-react Shopping-List Android --deploymentName Production" , 
+    "relase:android" : "appcenter codepush release-react -a karimgharbbi-gmail.com/Shopping-List  -d Production"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.2",
